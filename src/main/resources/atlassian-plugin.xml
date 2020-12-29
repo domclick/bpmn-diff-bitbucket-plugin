@@ -1,0 +1,27 @@
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="myapp" location="i18n/myapp"/>
+
+    <web-resource key="bpmn-diff-plugin-resources" name="BPMN Diff Plugin Resources" >
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+
+        <resource type="download" name="app.css" location="css/app.css" />
+        <resource type="download" name="bpmnio.css" location="css/bpmnio.css" />
+        <resource type="download" name="diff.css" location="css/diff.css" />
+        <resource type="download" name="bpmn_diff.js" location="js/bpmn_diff.bundle.js" />
+
+        <context>bpmn-diff-bitbucket-plugin</context>
+    </web-resource>
+
+    <servlet name="BPMN Diff Page" i18n-name-key="ru.domclick.bitbucket.bpmn-diff-servlet.name"
+             key="ru.domclick.bpmn-diff-servlet"
+             class="ru.domclick.bitbucket.BpmnDiffServlet">
+        <url-pattern>/bpmn-diff</url-pattern>
+    </servlet>
+</atlassian-plugin>

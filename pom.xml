@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.atlassian.pom</groupId>
+        <artifactId>closedsource-pom</artifactId>
+        <version>5.0.21</version>
+    </parent>
+
+    <groupId>ru.domclick.bitbucket</groupId>
+    <artifactId>bpmn-diff-bitbucket-plugin</artifactId>
+    <version>1.0.0</version>
+
+    <name>BPMN Diff Bitbucket Plugin</name>
+    <description>Bitbucket Server plugin for BPMN file versions visual comparison during pull-requests</description>
+    <packaging>atlassian-plugin</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.atlassian.sal</groupId>
+            <artifactId>sal-api</artifactId>
+            <version>${sal.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugin</groupId>
+            <artifactId>atlassian-spring-scanner-annotation</artifactId>
+            <version>${atlassian.spring.scanner.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugins</groupId>
+            <artifactId>atlassian-plugins-api</artifactId>
+            <version>${atlassian.plugins.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.soy</groupId>
+            <artifactId>soy-template-renderer-api</artifactId>
+            <version>${soy.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugins</groupId>
+            <artifactId>atlassian-plugins-webfragment-api</artifactId>
+            <version>${webfragments.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.plugins</groupId>
+            <artifactId>atlassian-plugins-webresource-api</artifactId>
+            <version>${webresources.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.json</groupId>
+            <artifactId>atlassian-json-api</artifactId>
+            <version>${jsonapi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.libversion}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.templaterenderer</groupId>
+            <artifactId>atlassian-template-renderer-api</artifactId>
+            <version>${atr.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.bitbucket.server</groupId>
+            <artifactId>bitbucket-api</artifactId>
+            <version>${bitbucket.api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Page bootstrapper dependencies -->
+        <dependency>
+            <groupId>com.atlassian.plugins</groupId>
+            <artifactId>atlassian-clientside-extensions-page-bootstrapper</artifactId>
+            <version>${cse.version}</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>atlassian-public</id>
+            <url>https://maven.atlassian.com/repository/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>bitbucket-maven-plugin</artifactId>
+                <version>${amps.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <compressJs>false</compressJs>
+                    <compressCss>false</compressCss>
+                    <enableQuickReload>true</enableQuickReload>
+                    <products>
+                        <product>
+                            <id>bitbucket</id>
+                            <instanceId>bitbucket</instanceId>
+                            <version>${bitbucket.version}</version>
+                            <dataVersion>${bitbucket.data.version}</dataVersion>
+                        </product>
+                    </products>
+                    <!-- https://developer.atlassian.com/server/framework/atlassian-sdk/bundling-extra-dependencies-in-an-obr/ -->
+                    <pluginDependencies>
+                        <pluginDependency>
+                            <groupId>com.atlassian.plugins</groupId>
+                            <artifactId>atlassian-clientside-extensions-page-bootstrapper</artifactId>
+                        </pluginDependency>
+                    </pluginDependencies>
+                    <instructions>
+                        <Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
+                        <Atlassian-Scan-Folders>META-INF/plugin-descriptors</Atlassian-Scan-Folders>
+                        <Import-Package>
+                            <!-- https://developer.atlassian.com/server/framework/atlassian-sdk/bundling-extra-dependencies-in-an-obr/ -->
+                            com.atlassian.plugin.clientsideextensions;version="${cse.version}",
+                            com.atlassian.plugin.osgi.bridge.external,
+                            *
+                        </Import-Package>
+                        <Spring-Context>*</Spring-Context>
+                    </instructions>
+                   <pluginArtifacts>
+                        <pluginArtifact>
+                            <groupId>com.atlassian.plugins</groupId>
+                            <artifactId>atlassian-clientside-extensions-page-bootstrapper</artifactId>
+                            <version>${cse.version}</version>
+                        </pluginArtifact>
+                    </pluginArtifacts>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.atlassian.plugin</groupId>
+                <artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
+                <version>${atlassian.spring.scanner.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>atlassian-spring-scanner</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scannedDependencies>
+                        <dependency>
+                            <groupId>com.atlassian.plugin</groupId>
+                            <artifactId>atlassian-spring-scanner-external-jar</artifactId>
+                        </dependency>
+                    </scannedDependencies>
+                    <verbose>false</verbose>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- Install front-end modules and run ESLint -->
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>${frontend.maven.plugin.version}</version>
+                <configuration>
+                    <nodeVersion>${nodeVersion}</nodeVersion>
+                    <installDirectory>${frontend.maven.plugin.install.directory}</installDirectory>
+                    <workingDirectory>${basedir}</workingDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>install-prod-dependencies</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>${fe.cmd.install}</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-the-ui</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run ${fe.cmd.build}</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>lint</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run lint</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>run-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run test</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>watch-mode</id>
+            <properties>
+                <fe.cmd.build>${fe.cmd.build.dev}</fe.cmd.build>
+            </properties>
+        </profile>
+    </profiles>
+
+    <properties>
+        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+        <frontend.maven.plugin.version>1.6</frontend.maven.plugin.version>
+        <frontend.maven.plugin.install.directory>${project.build.directory}</frontend.maven.plugin.install.directory>
+        <nodeVersion>v12.13.0</nodeVersion>
+        <fe.cmd.install>install --no-progress</fe.cmd.install>
+        <fe.cmd.build>build:prod</fe.cmd.build>
+        <fe.cmd.build.dev>build:dev</fe.cmd.build.dev>
+        <frontend.working.directory>src/main/bpmn-diff-bitbucket-plugin</frontend.working.directory>
+        <cse.version>1.2.3</cse.version>
+
+        <sal.version>4.0.0</sal.version>
+        <spring.version>5.0.10.RELEASE</spring.version>
+        <atlassian.spring.scanner.version>2.1.9</atlassian.spring.scanner.version>
+        <atlassian.plugins.version>5.2.1</atlassian.plugins.version>
+        <amps.version>8.0.0</amps.version>
+        <soy.version>5.0.0</soy.version>
+        <webfragments.version>5.1.0</webfragments.version>
+        <webresources.version>4.1.3</webresources.version>
+        <jsonapi.version>0.11</jsonapi.version>
+        <gson.libversion>2.3.1</gson.libversion>
+
+        <bitbucket.version>7.4.0</bitbucket.version>
+        <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
+        <bitbucket.osgi.version>7.0.0</bitbucket.osgi.version>
+        <bitbucket.api.version>7.2.2</bitbucket.api.version>
+
+        <atr.version>4.0.0</atr.version>
+
+        <quick.reload.version>3.0.0</quick.reload.version>
+    </properties>
+
+</project>

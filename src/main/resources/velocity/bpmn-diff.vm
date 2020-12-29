@@ -1,0 +1,21 @@
+<html>
+<head>
+    $webResourceManager.requireResourcesForContext("ru.domclick.bitbucket.bpmn-diff-bitbucket-plugin:bpmn-diff-plugin-resources")
+    <meta name="decorator" content="atl.general"/>
+    <title>BPMN Visual Diff</title>
+</head>
+<body>
+<div class="content">
+    <div class="di-container left drop-zone" target="left">
+        <div class="canvas" id="canvas-left"></div>
+    </div>
+    <div class="di-container right drop-zone" target="right">
+        <div class="canvas" id="canvas-right"></div>
+    </div>
+    <div id="changes-overview" class="collapsed">
+        <div class="io-control show-hide-toggle">List of Changes</div>
+        <div class="io-control changes"></div>
+    </div>
+</div>
+</body>
+</html>
