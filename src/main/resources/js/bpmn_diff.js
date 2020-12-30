@@ -5,6 +5,7 @@
 import { diff } from 'bpmn-js-differ';
 import BpmnModdle from 'bpmn-moddle';
 import BpmnViewer from 'bpmn-js/lib/NavigatedViewer';
+import DOMPurify from 'dompurify';
 
 const camundaModdle = require('camunda-bpmn-moddle/resources/camunda.json');
 
@@ -89,7 +90,7 @@ const axios = require('axios').default;
                     top: -12,
                     right: 12,
                 },
-                html: `<span class="marker ${className}">${symbol}</span>`,
+                html: `<span class="marker ${DOMPurify.sanitize(className)}">${DOMPurify.sanitize(symbol)}</span>`,
             });
         } catch (e) {
             console.error(`Error adding marker to element ${elementId}`, e);
@@ -116,9 +117,9 @@ const axios = require('axios').default;
         let count = 0;
         function addRow(element, type, label) {
             const html =
-                `${'<tr class="entry">' + '<td>'}${count++}</td><td>${element.name || ''}</td>` +
-                `<td>${element.$type.replace('bpmn:', '')}</td>` +
-                `<td><span class="status">${label}</span></td>` +
+                `${'<tr class="entry">' + '<td>'}${count++}</td><td>${DOMPurify.sanitize(element.name) || ''}</td>` +
+                `<td>${DOMPurify.sanitize(element.$type.replace('bpmn:', ''))}</td>` +
+                `<td><span class="status">${DOMPurify.sanitize(label)}</span></td>` +
                 `</tr>`;
 
             const row = $(html)
@@ -248,8 +249,8 @@ const axios = require('axios').default;
             $.each(obj.attrs, (attr, changes) => {
                 details =
                     `${details}<tr>` +
-                    `<td>${attr}</td><td>${changes.oldValue}</td>` +
-                    `<td>${changes.newValue}</td>` +
+                    `<td>${DOMPurify.sanitize(attr)}</td><td>${DOMPurify.sanitize(changes.oldValue)}</td>` +
+                    `<td>${DOMPurify.sanitize(changes.newValue)}</td>` +
                     `</tr>`;
             });
 
