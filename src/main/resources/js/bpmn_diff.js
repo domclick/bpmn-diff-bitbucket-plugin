@@ -38,8 +38,8 @@ const axios = require('axios').default;
 
     function loadBpmnModels(bpmnSchemas) {
         const requests = [];
-        requests.push(loadBpmnModel(bpmnSchemas[0]));
         requests.push(loadBpmnModel(bpmnSchemas[1]));
+        requests.push(loadBpmnModel(bpmnSchemas[0]));
         return Promise.all(requests);
     }
 
@@ -56,8 +56,8 @@ const axios = require('axios').default;
 
     function drawBpmnSchemas(bpmnSchemas, viewers) {
         const requests = [];
-        requests.push(drawBpmnSchema(bpmnSchemas[0], viewers[0]));
-        requests.push(drawBpmnSchema(bpmnSchemas[1], viewers[1]));
+        requests.push(drawBpmnSchema(bpmnSchemas[0], viewers[1]));
+        requests.push(drawBpmnSchema(bpmnSchemas[1], viewers[0]));
         return Promise.all(requests);
     }
 
